@@ -58,7 +58,7 @@ namespace Windows.UI.Interactivity
         /// <returns>true if the element is contained in the collection, otherwise false</returns>
         public bool Contains(T item)
         {
-            return this.Contains(item);
+            return this.items.Contains(item);
         }
 
         /// <summary>
