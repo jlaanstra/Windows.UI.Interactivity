@@ -1,7 +1,44 @@
-# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-bin
-obj
-
-# mstest test results
-TestResults
-nuget/
+﻿#ignore thumbnails created by windows
+Thumbs.db
+#Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.testsettings
+*.log
+*.appxupload
+*.appx
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+obj/
+SDK/
+nuget/*/content
+nuget/*/lib
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult*
+download/
+AppPackages/
+/DropNet.CLI/possantest.bat
+*.nupkg
+src/Callisto.VSIX/License.txt
+src/Callisto.VSIX/SDKManifest.xml
+src/Callisto.VSIX/Redist/
+src/Callisto.VSIX/References/
+tools/nuget/callisto/lib
