@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
@@ -118,7 +119,7 @@ namespace Windows.UI.Interactivity
             {
                 if (associatedObject != null)
                 {
-                    return Window.Current.Content != null && this.Ancestors.Contains(Window.Current.Content);
+                    return Window.Current.Content != null && this.Ancestors.Any(a => a == Window.Current.Content || a is Popup);
                 }
                 return false;
             }
@@ -140,7 +141,18 @@ namespace Windows.UI.Interactivity
                     while (parent != null)
                     {
                         yield return parent;
-                        parent = VisualTreeHelper.GetParent(parent);
+                        var newParent = VisualTreeHelper.GetParent(parent);
+                        //handle the case of a popup
+                        //VisualTreeHelper.GetParent gives null but we can try to get the Parent another way
+                        if (newParent == null)
+                        {
+                            FrameworkElement element = parent as FrameworkElement;
+                            if (element != null)
+                            {
+                                newParent = element.Parent;
+                            }
+                        }
+                        parent = newParent;
                     }
                 }
             }
