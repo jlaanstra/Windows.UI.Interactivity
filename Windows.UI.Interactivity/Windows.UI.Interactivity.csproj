@@ -113,7 +113,6 @@
     <Compile Include="DependencyObjectCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EventAsync.cs" />
     <Compile Include="EventTrigger.cs" />
     <Compile Include="EventTriggerBase.cs" />
     <Compile Include="EventTriggerBaseOfT.cs" />

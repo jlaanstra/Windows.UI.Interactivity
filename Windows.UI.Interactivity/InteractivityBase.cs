@@ -14,6 +14,47 @@ namespace Windows.UI.Interactivity
     {
         private FrameworkElement associatedObject;
         private Type associatedObjectTypeConstraint;
+        //private TaskCompletionSource<object> tcs;
+
+        //public static readonly DependencyProperty DataContextDetectorProperty =
+        //        DependencyProperty.Register("DataContextDetector",
+        //                            typeof(object),
+        //                            typeof(InteractivityBase),
+        //                            new PropertyMetadata(null, DataContextDetectorChanged));
+
+        //public object DataContextDetector
+        //{
+        //    get { return GetValue(DataContextDetectorProperty); }
+        //    set { this.SetValue(DataContextDetectorProperty, value); }
+        //}
+
+        //private static void DataContextDetectorChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    InteractivityBase myControl = (InteractivityBase)sender;
+        //    if (e.NewValue != null)
+        //    {
+        //        myControl.SetBinding(DataContextProperty,
+        //                new Binding
+        //                {
+        //                    Path = new PropertyPath("DataContext"),
+        //                    Source = myControl.AssociatedObject
+        //                }
+        //            );
+        //    }
+        //    if (myControl.tcs != null)
+        //    {
+        //        myControl.tcs.SetResult(e.NewValue);
+        //    }
+        //}
+
+        #region Constructors
+
+        public InteractivityBase()
+        {
+            
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the object to which this behavior is attached.
@@ -58,6 +99,8 @@ namespace Windows.UI.Interactivity
 
         protected void OnAssociatedObjectChanged()
         {
+            //this.SetBinding(InteractivityBase.DataContextDetectorProperty, new Binding() { Source = this.AssociatedObject, Path = new PropertyPath("DataContext") });
+
             if (this.AssociatedObjectChanged == null)
             {
                 return;
@@ -85,90 +128,64 @@ namespace Windows.UI.Interactivity
 
         /// <summary>
         /// Configures data context. 
-        /// Courtesy of Filip Skakun
-        /// http://twitter.com/xyzzer
         /// </summary>
-        protected async void ConfigureDataContext()
+        protected async Task ConfigureDataContext()
         {
-            while (associatedObject != null)
+            DataContextChangedDetector det = new DataContextChangedDetector(this);
+            await det.WaitForDataContext(this.AssociatedObject);
+        }
+    }
+
+    class DataContextChangedDetector
+    {
+        private InteractivityBase binder;
+        private TaskCompletionSource<object> tcs;
+
+        public DataContextChangedDetector(InteractivityBase binder)
+        {
+            this.binder = binder;
+            this.tcs = new TaskCompletionSource<object>();
+        }
+
+        public Task WaitForDataContext(FrameworkElement obj)
+        {
+            if(obj.DataContext != null)
             {
-                if (AssociatedObjectIsInVisualTree)
-                {
-                    SetBinding(DataContextProperty,
+                this.Complete(obj.DataContext);
+            }
+            else
+            {
+                var b = new Binding();
+                var prop = DependencyProperty.RegisterAttached(
+                    "ListenAttachedDataContext" + binder.GetHashCode().ToString("{0:x}") + this.GetHashCode().ToString("{0:x}"),
+                    typeof(object),
+                    typeof(DataContextChangedDetector),
+                    new PropertyMetadata(null, new PropertyChangedCallback(onPropertyChanged)));
+
+                obj.SetBinding(prop, b);
+            }
+            return tcs.Task;
+        }
+        
+        private void onPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        {
+            FrameworkElement elm = sender as FrameworkElement;
+            if (elm != null && elm.DataContext != null)
+            {
+                this.Complete(elm.DataContext);
+            }
+        }
+
+        private void Complete(object dataContext)
+        {
+            binder.SetBinding(FrameworkElement.DataContextProperty,
                         new Binding
                         {
                             Path = new PropertyPath("DataContext"),
-                            Source = associatedObject
+                            Source = ((IAttachedObject)binder).AssociatedObject
                         }
                     );
-                    return;
-                }
-
-                await WaitForLayoutUpdateAsync();
-            }
-        }
-
-        /// <summary>
-        /// Checks if object is in visual tree
-        /// Courtesy of Filip Skakun
-        /// http://twitter.com/xyzzer
-        /// </summary>
-        private bool AssociatedObjectIsInVisualTree
-        {
-            get
-            {
-                if (associatedObject != null)
-                {
-                    return Window.Current.Content != null && this.Ancestors.Any(a => a == Window.Current.Content || a is Popup);
-                }
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Finds the object's associatedobject's ancestors
-        /// Courtesy of Filip Skakun
-        /// http://twitter.com/xyzzer
-        /// </summary>
-        private IEnumerable<DependencyObject> Ancestors
-        {
-            get
-            {
-                if (associatedObject != null)
-                {
-                    var parent = VisualTreeHelper.GetParent(associatedObject);
-
-                    while (parent != null)
-                    {
-                        yield return parent;
-                        var newParent = VisualTreeHelper.GetParent(parent);
-                        //handle the case of a popup
-                        //VisualTreeHelper.GetParent gives null but we can try to get the Parent another way
-                        if (newParent == null)
-                        {
-                            FrameworkElement element = parent as FrameworkElement;
-                            if (element != null)
-                            {
-                                newParent = element.Parent;
-                            }
-                        }
-                        parent = newParent;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates a task that waits for a layout update to complete
-        /// Courtesy of Filip Skakun
-        /// http://twitter.com/xyzzer
-        /// </summary>
-        /// <returns></returns>
-        private async Task WaitForLayoutUpdateAsync()
-        {
-            await EventAsync.FromEvent<object>(
-                eh => associatedObject.LayoutUpdated += eh,
-                eh => associatedObject.LayoutUpdated -= eh);
+            tcs.SetResult(dataContext);
         }
     }
 }
