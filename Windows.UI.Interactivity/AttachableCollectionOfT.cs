@@ -80,9 +80,21 @@ namespace Windows.UI.Interactivity
                 if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled) // TODO: Verificare qui
                 {
                     this.AssociatedObject = frameworkElement;
+                    this.AssociatedObject.Unloaded += AssociatedObject_Unloaded;
                 }
                 this.OnAttached();
             }
+        }
+
+        /// <summary>
+        /// Handles the Unloaded event of the AssociatedObject control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
+            this.Detach();
         }
 
         /// <summary>

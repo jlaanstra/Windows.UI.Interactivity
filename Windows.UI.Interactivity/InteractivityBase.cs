@@ -131,61 +131,9 @@ namespace Windows.UI.Interactivity
         /// </summary>
         protected async Task ConfigureDataContext()
         {
-            DataContextChangedDetector det = new DataContextChangedDetector(this);
-            await det.WaitForDataContext(this.AssociatedObject);
+            //make sure the detector is disposed
+            DataContextChangedDetector det = new DataContextChangedDetector(this, this.AssociatedObject);
+            await det.WaitForDataContext();
         }
-    }
-
-    class DataContextChangedDetector
-    {
-        private InteractivityBase binder;
-        private TaskCompletionSource<object> tcs;
-
-        public DataContextChangedDetector(InteractivityBase binder)
-        {
-            this.binder = binder;
-            this.tcs = new TaskCompletionSource<object>();
-        }
-
-        public Task WaitForDataContext(FrameworkElement obj)
-        {
-            if(obj.DataContext != null)
-            {
-                this.Complete(obj.DataContext);
-            }
-            else
-            {
-                var b = new Binding();
-                var prop = DependencyProperty.RegisterAttached(
-                    "ListenAttachedDataContext" + binder.GetHashCode().ToString("{0:x}") + this.GetHashCode().ToString("{0:x}"),
-                    typeof(object),
-                    typeof(DataContextChangedDetector),
-                    new PropertyMetadata(null, new PropertyChangedCallback(onPropertyChanged)));
-
-                obj.SetBinding(prop, b);
-            }
-            return tcs.Task;
-        }
-        
-        private void onPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-        {
-            FrameworkElement elm = sender as FrameworkElement;
-            if (elm != null && elm.DataContext != null)
-            {
-                this.Complete(elm.DataContext);
-            }
-        }
-
-        private void Complete(object dataContext)
-        {
-            binder.SetBinding(FrameworkElement.DataContextProperty,
-                        new Binding
-                        {
-                            Path = new PropertyPath("DataContext"),
-                            Source = ((IAttachedObject)binder).AssociatedObject
-                        }
-                    );
-            tcs.SetResult(dataContext);
-        }
-    }
+    }    
 }

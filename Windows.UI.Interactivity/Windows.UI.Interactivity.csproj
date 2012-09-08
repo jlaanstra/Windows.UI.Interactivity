@@ -107,15 +107,14 @@
     <Compile Include="Behavior.cs" />
     <Compile Include="BehaviorCollection.cs" />
     <Compile Include="BehaviorOfT.cs" />
-    <Compile Include="CustomPropertyValueEditorAttribute.cs" />
-    <Compile Include="CustomPropertyValueEditor.cs" />
-    <Compile Include="DefaultTriggerAttribute.cs" />
+    <Compile Include="DataContextChangedDetector.cs" />
     <Compile Include="DependencyObjectCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventTrigger.cs" />
     <Compile Include="EventTriggerBase.cs" />
     <Compile Include="EventTriggerBaseOfT.cs" />
+    <Compile Include="FrameworkElementExtensions.cs" />
     <Compile Include="IAttachedObject.cs" />
     <Compile Include="Interaction.cs" />
     <Compile Include="InteractivityBase.cs" />
@@ -134,7 +133,9 @@
     <Compile Include="TriggerBase.cs" />
     <Compile Include="TriggerBaseOfT.cs" />
     <Compile Include="TriggerCollection.cs" />
-    <Compile Include="TypeConstraintAttribute.cs" />
+    <Compile Include="TypeConstraintAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

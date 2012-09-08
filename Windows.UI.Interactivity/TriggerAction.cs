@@ -18,8 +18,6 @@ namespace Windows.UI.Interactivity
     /// <remarks>
     /// This is an infrastructure class. Action authors should derive from TriggerAction&lt;T&gt; instead of this class.
     /// </remarks>
-    [DefaultTrigger(typeof(ButtonBase), typeof(EventTrigger), "Click")]
-    [DefaultTrigger(typeof(UIElement), typeof(EventTrigger), "MouseLeftButtonDown")]
     public abstract class TriggerAction : InteractivityBase
     {
         public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(TriggerAction), new PropertyMetadata((object)true));

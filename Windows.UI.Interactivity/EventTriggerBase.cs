@@ -274,7 +274,7 @@ namespace Windows.UI.Interactivity
                 {
                     this.OnSourceChanged((object)null, this.Source);
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
                 }
             }
@@ -299,7 +299,7 @@ namespace Windows.UI.Interactivity
             {
                 this.OnSourceChanged(this.Source, (object)null);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
             }
             this.UnregisterSourceChanged();
