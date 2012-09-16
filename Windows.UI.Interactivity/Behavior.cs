@@ -29,10 +29,10 @@ namespace Windows.UI.Interactivity
         /// Attaches to the specified object.
         /// 
         /// </summary>
-        /// <param name="dependencyObject">The object to attach to.</param><exception cref="T:System.InvalidOperationException">The Behavior is already hosted on a different element.</exception><exception cref="T:System.InvalidOperationException">dependencyObject does not satisfy the Behavior type constraint.</exception>
-        public override async void Attach(FrameworkElement dependencyObject)
+        /// <param name="frameworkElement">The object to attach to.</param><exception cref="T:System.InvalidOperationException">The Behavior is already hosted on a different element.</exception><exception cref="T:System.InvalidOperationException">dependencyObject does not satisfy the Behavior type constraint.</exception>
+        public override async void Attach(FrameworkElement frameworkElement)
         {
-            if (dependencyObject == this.AssociatedObject)
+            if (frameworkElement == this.AssociatedObject)
             {
                 return;
             }
@@ -40,16 +40,18 @@ namespace Windows.UI.Interactivity
             {
                 throw new InvalidOperationException("Cannot host behavior multiple times.");
             }
-            if (dependencyObject != null && !this.AssociatedObjectTypeConstraint.GetTypeInfo().IsAssignableFrom(dependencyObject.GetType().GetTypeInfo()))
+            if (frameworkElement != null && !this.AssociatedObjectTypeConstraint.GetTypeInfo().IsAssignableFrom(frameworkElement.GetType().GetTypeInfo()))
             {
                 throw new InvalidOperationException("Type constraint violated.");
             }
             else
             {
-                this.AssociatedObject = dependencyObject;
+                this.AssociatedObject = frameworkElement;
                 this.OnAssociatedObjectChanged();
+
+                base.Attach(frameworkElement);
                 //we need to fix the datacontext for databinding to work
-                await this.ConfigureDataContext();
+                await this.ConfigureDataContextAsync();
                 this.OnAttached();
             }
         }

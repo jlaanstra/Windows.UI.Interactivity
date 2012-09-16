@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +26,11 @@ namespace App1
         {
             this.InitializeComponent();
             this.DataContext = new MainPageViewModel();
+
+            Task.Delay(10000).ContinueWith((t) => 
+                {
+                    this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => this.DataContext = new MainPageViewModel());
+                });
         }
 
         /// <summary>

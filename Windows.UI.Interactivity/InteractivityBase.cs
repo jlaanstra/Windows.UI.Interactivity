@@ -14,44 +14,16 @@ namespace Windows.UI.Interactivity
     {
         private FrameworkElement associatedObject;
         private Type associatedObjectTypeConstraint;
-        //private TaskCompletionSource<object> tcs;
-
-        //public static readonly DependencyProperty DataContextDetectorProperty =
-        //        DependencyProperty.Register("DataContextDetector",
-        //                            typeof(object),
-        //                            typeof(InteractivityBase),
-        //                            new PropertyMetadata(null, DataContextDetectorChanged));
-
-        //public object DataContextDetector
-        //{
-        //    get { return GetValue(DataContextDetectorProperty); }
-        //    set { this.SetValue(DataContextDetectorProperty, value); }
-        //}
-
-        //private static void DataContextDetectorChanged(object sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    InteractivityBase myControl = (InteractivityBase)sender;
-        //    if (e.NewValue != null)
-        //    {
-        //        myControl.SetBinding(DataContextProperty,
-        //                new Binding
-        //                {
-        //                    Path = new PropertyPath("DataContext"),
-        //                    Source = myControl.AssociatedObject
-        //                }
-        //            );
-        //    }
-        //    if (myControl.tcs != null)
-        //    {
-        //        myControl.tcs.SetResult(e.NewValue);
-        //    }
-        //}
+        private TaskCompletionSource<object> tcs;
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InteractivityBase" /> class.
+        /// </summary>
         public InteractivityBase()
         {
-            
+            this.tcs = new TaskCompletionSource<object>();
         }
 
         #endregion
@@ -99,8 +71,6 @@ namespace Windows.UI.Interactivity
 
         protected void OnAssociatedObjectChanged()
         {
-            //this.SetBinding(InteractivityBase.DataContextDetectorProperty, new Binding() { Source = this.AssociatedObject, Path = new PropertyPath("DataContext") });
-
             if (this.AssociatedObjectChanged == null)
             {
                 return;
@@ -122,18 +92,60 @@ namespace Windows.UI.Interactivity
             set { this.associatedObjectTypeConstraint = value; }
         }
 
-        public abstract void Attach(FrameworkElement frameworkElement);
+        public virtual void Attach(FrameworkElement frameworkElement)
+        {
+            if(frameworkElement != null)
+            {
+                frameworkElement.AddDataContextChangedHandler(this.DataContextChanged);
+                if (frameworkElement.DataContext != null && !tcs.Task.IsCompleted)
+                {
+                    this.DataContextChanged(frameworkElement, EventArgs.Empty);
+                }
+            }
+        }
 
-        public abstract void Detach();
+        public virtual void Detach()
+        {
+            if (this.AssociatedObject != null)
+            {
+                this.AssociatedObject.RemoveDataContextChangedHandler(this.DataContextChanged);
+            }
+        }
+
+        private void DataContextChanged(object sender, EventArgs e)
+        {
+            FrameworkElement elem = sender as FrameworkElement;
+            if (elem != null)
+            {
+                object oldDC = this.DataContext;
+                this.SetBinding(FrameworkElement.DataContextProperty,
+                        new Binding
+                        {
+                            Path = new PropertyPath("DataContext"),
+                            Source = elem
+                        }
+                    );
+                object newDC = this.DataContext;
+
+                this.OnDataContextChanged(oldDC, newDC);
+
+                if (!tcs.Task.IsCompleted)
+                {
+                    tcs.SetResult(newDC);
+                }
+            }
+        }
+
+        protected virtual void OnDataContextChanged(object oldValue, object newValue)
+        {
+        }
 
         /// <summary>
         /// Configures data context. 
         /// </summary>
-        protected async Task ConfigureDataContext()
+        protected async Task<object> ConfigureDataContextAsync()
         {
-            //make sure the detector is disposed
-            DataContextChangedDetector det = new DataContextChangedDetector(this, this.AssociatedObject);
-            await det.WaitForDataContext();
+            return await tcs.Task;
         }
     }    
 }

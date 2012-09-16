@@ -112,8 +112,10 @@ namespace Windows.UI.Interactivity
             {
                 this.AssociatedObject = frameworkElement;
                 this.OnAssociatedObjectChanged();
+
+                base.Attach(frameworkElement);
                 //we need to fix the datacontext for databinding to work
-                await this.ConfigureDataContext();
+                await this.ConfigureDataContextAsync();
                 this.OnAttached();
             }
         }

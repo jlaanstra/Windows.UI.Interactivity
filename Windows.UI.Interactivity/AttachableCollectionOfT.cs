@@ -77,7 +77,7 @@ namespace Windows.UI.Interactivity
                 {
                     throw new InvalidOperationException();
                 }
-                if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled) // TODO: Verificare qui
+                if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 {
                     this.AssociatedObject = frameworkElement;
                     this.AssociatedObject.Unloaded += AssociatedObject_Unloaded;
