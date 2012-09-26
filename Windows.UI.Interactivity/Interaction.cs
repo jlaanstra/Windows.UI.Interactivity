@@ -68,14 +68,17 @@ namespace Windows.UI.Interactivity
         {
             BehaviorCollection behaviorCollection1 = args.OldValue as BehaviorCollection;
             BehaviorCollection behaviorCollection2 = args.NewValue as BehaviorCollection;
+            //no change
             if (behaviorCollection1 == behaviorCollection2)
             {
                 return;
             }
+            //unload previous collection
             if (behaviorCollection1 != null && behaviorCollection1.AssociatedObject != null)
             {
                 behaviorCollection1.Detach();
             }
+            //no new collection
             if (behaviorCollection2 == null || obj == null)
             {
                 return;

@@ -116,6 +116,7 @@
     <Compile Include="EventTriggerBaseOfT.cs" />
     <Compile Include="FrameworkElementExtensions.cs" />
     <Compile Include="IAttachedObject.cs" />
+    <Compile Include="ILifetimeTarget.cs" />
     <Compile Include="Interaction.cs" />
     <Compile Include="InteractivityBase.cs" />
     <Compile Include="InvokeCommandAction.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="TypeConstraintAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WeakLifetimeObserver.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

@@ -304,10 +304,14 @@ namespace Windows.UI.Interactivity
             }
             this.UnregisterSourceChanged();
             if (behavior != null)
+            {
                 behavior.AssociatedObjectChanged -= new EventHandler(this.OnBehaviorHostChanged);
+            }
             this.SourceNameResolver.NameScopeReferenceElement = null;
             if (string.Compare(this.GetEventName(), "Loaded", StringComparison.Ordinal) != 0 || associatedElement == null)
+            {
                 return;
+            }
             this.UnregisterLoaded(associatedElement);
         }
 
@@ -327,7 +331,9 @@ namespace Windows.UI.Interactivity
             else
             {
                 if (args.OldValue == null && newSource != null)
+                {
                     eventTriggerBase.UnregisterEvent(newSource, eventTriggerBase.GetEventName());
+                }
                 eventTriggerBase.OnSourceChanged(args.OldValue, args.NewValue);
             }
         }
@@ -340,7 +346,9 @@ namespace Windows.UI.Interactivity
         private void RegisterSourceChanged()
         {
             if (this.IsSourceChangedRegistered)
+            {
                 return;
+            }
             this.SourceNameResolver.ResolvedElementChanged += new EventHandler<NameResolvedEventArgs>(this.OnSourceNameResolverElementChanged);
             this.IsSourceChangedRegistered = true;
         }
@@ -348,7 +356,9 @@ namespace Windows.UI.Interactivity
         private void UnregisterSourceChanged()
         {
             if (!this.IsSourceChangedRegistered)
+            {
                 return;
+            }
             this.SourceNameResolver.ResolvedElementChanged -= new EventHandler<NameResolvedEventArgs>(this.OnSourceNameResolverElementChanged);
             this.IsSourceChangedRegistered = false;
         }

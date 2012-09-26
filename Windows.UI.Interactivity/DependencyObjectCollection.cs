@@ -16,7 +16,7 @@ namespace Windows.UI.Interactivity
     /// <typeparam name="T">Type of the DependencyObject contained</typeparam>
     public class DependencyObjectCollection<T> : FrameworkElement, IList<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged where T : FrameworkElement
     {
-        private static readonly DependencyProperty CollectionProperty = DependencyProperty.Register("DOCollection", typeof(ObservableCollection<T>), typeof(DependencyObjectCollection<T>), null);
+        //private static readonly DependencyProperty CollectionProperty = DependencyProperty.Register("DOCollection", typeof(ObservableCollection<T>), typeof(DependencyObjectCollection<T>), null);
     
         /// <summary>
         /// Hosts the collection
@@ -29,7 +29,7 @@ namespace Windows.UI.Interactivity
         public DependencyObjectCollection()
         {
             this.items = new ObservableCollection<T>();
-            this.SetValue(DependencyObjectCollection<T>.CollectionProperty, this.items);
+            //this.SetValue(DependencyObjectCollection<T>.CollectionProperty, this.items);
         }
 
         #region Various Interfaces
