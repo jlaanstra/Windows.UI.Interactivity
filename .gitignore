@@ -37,3 +37,4 @@ download/
 AppPackages/
 *.nupkg
 *.nuspec
+*.suo

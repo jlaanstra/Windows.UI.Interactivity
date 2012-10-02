@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace Windows.UI.Interactivity
 {
@@ -22,6 +23,12 @@ namespace Windows.UI.Interactivity
         /// </remarks>
         internal TriggerActionCollection()
         {
+        }
+
+        protected override void InternalAttach(FrameworkElement frameworkElement)
+        {
+            base.InternalAttach(frameworkElement);
+            this.AssociatedObjectLoaded();
         }
 
         /// <summary>

@@ -23,16 +23,7 @@ namespace Windows.UI.Interactivity
         /// <summary>
         /// The saved weak reference to the associated object
         /// </summary>
-        private WeakReference<FrameworkElement> savedReference;
-
-        #region Properties
-        
-        /// <summary>
-        /// Snapshot collection
-        /// </summary>
-        //private Collection<T> Snapshot { get; set; }
-
-        #endregion
+        protected WeakReference<FrameworkElement> savedReference;
 
         #region Abstracts
         
@@ -65,7 +56,6 @@ namespace Windows.UI.Interactivity
         internal AttachableCollection()
         {
             this.CollectionChanged += new NotifyCollectionChangedEventHandler(this.OnCollectionChanged);
-            //this.Snapshot = new Collection<T>();
         }
 
         ~AttachableCollection()
@@ -93,28 +83,16 @@ namespace Windows.UI.Interactivity
                 if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 {
                     this.savedReference = new WeakReference<FrameworkElement>(frameworkElement);
-                    //this.AssociatedObject = frameworkElement;
-                    // The observer will be kept alive by the event handlers
-                    new WeakLifetimeObserver(frameworkElement, this);
+                    this.InternalAttach(frameworkElement);                    
                 }
-                //this.OnAttached();
             }
         }
 
-        ///// <summary>
-        ///// Handles the Unloaded event of the AssociatedObject control.
-        ///// </summary>
-        ///// <param name="sender">The source of the event.</param>
-        ///// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        //private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
-        //{
-        //    Debug.WriteLine("{0} unloaded", this.GetType());
-        //    if(this.AssociatedObject != null)
-        //    {
-        //        this.AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
-        //        this.Detach();
-        //    }
-        //}
+        protected virtual void InternalAttach(FrameworkElement frameworkElement)
+        {
+            // The observer will be kept alive by the event handlers
+            new WeakLifetimeObserver(frameworkElement, this);
+        }
 
         /// <summary>
         /// Handles the Loaded event of the AssociatedObject control.
@@ -163,7 +141,7 @@ namespace Windows.UI.Interactivity
             this.AssociatedObject = null;
         }
 
-        public FrameworkElement AssociatedObject { get; private set; } 
+        public FrameworkElement AssociatedObject { get; protected set; } 
 
         #endregion
 
@@ -181,15 +159,7 @@ namespace Windows.UI.Interactivity
                 case NotifyCollectionChangedAction.Add:
                     foreach (T item in e.NewItems)
                     {
-                        try
-                        {
-                            //this.VerifyAdd(item);
-                            this.ItemAdded(item);
-                        }
-                        finally
-                        {
-                            //this.Snapshot.Insert(base.IndexOf(item), item);
-                        }
+                        this.ItemAdded(item);
                     }
                     break;
 
@@ -197,7 +167,6 @@ namespace Windows.UI.Interactivity
                     foreach (T item in e.OldItems)
                     {
                         this.ItemRemoved(item);
-                        //this.Snapshot.Remove(item);
                     }
                     break;
 
@@ -205,19 +174,10 @@ namespace Windows.UI.Interactivity
                     foreach (T item in e.OldItems)
                     {
                         this.ItemRemoved(item);
-                        //this.Snapshot.Remove(item);
                     }
                     foreach (T item in e.NewItems)
                     {
-                        try
-                        {
-                            //this.VerifyAdd(item);
-                            this.ItemAdded(item);
-                        }
-                        finally
-                        {
-                            //this.Snapshot.Insert(base.IndexOf(item), item);
-                        }
+                        this.ItemAdded(item);
                     }
                     break;
 
@@ -225,16 +185,13 @@ namespace Windows.UI.Interactivity
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (T item in this) //.Snapshot)
+                    foreach (T item in this)
                     {
                         this.ItemRemoved(item);
                     }
 
-                    //this.Snapshot = new Collection<T>();
-
                     foreach (T item in this)
                     {
-                        //this.VerifyAdd(item);
                         this.ItemAdded(item);
                     }
                     break;
@@ -243,18 +200,6 @@ namespace Windows.UI.Interactivity
                     return;
             }
         }
-
-        ///// <summary>
-        ///// Verifies an item is not already present in the collection
-        ///// </summary>
-        ///// <param name="item">Item to verify</param>
-        //private void VerifyAdd(T item)
-        //{
-        //    if (this.Snapshot.Contains(item))
-        //    {
-        //        throw new InvalidOperationException();
-        //    }
-        //} 
 
         #endregion
     }
