@@ -30,19 +30,21 @@ namespace Windows.UI.Interactivity
 
         private void observedObject_Loaded(object sender, RoutedEventArgs e)
         {
+            FrameworkElement elem = sender as FrameworkElement;
             ILifetimeTarget reference;
             if (this.weakReference.TryGetTarget(out reference))
             {
-                reference.AssociatedObjectLoaded();
+                reference.AssociatedObjectLoaded(elem);
             }
         }
 
         private void observedObject_Unloaded(object sender, RoutedEventArgs e)
         {
+            FrameworkElement elem = sender as FrameworkElement;
             ILifetimeTarget reference;
             if (this.weakReference.TryGetTarget(out reference))
             {
-                reference.AssociatedObjectUnloaded();
+                reference.AssociatedObjectUnloaded(elem);
             }
         }
     }

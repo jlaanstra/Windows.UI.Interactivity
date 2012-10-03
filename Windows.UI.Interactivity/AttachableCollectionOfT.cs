@@ -23,7 +23,7 @@ namespace Windows.UI.Interactivity
         /// <summary>
         /// The saved weak reference to the associated object
         /// </summary>
-        protected WeakReference<FrameworkElement> savedReference;
+        private WeakReference<FrameworkElement> savedReference;
 
         #region Abstracts
         
@@ -82,13 +82,12 @@ namespace Windows.UI.Interactivity
                 }
                 if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 {
-                    this.savedReference = new WeakReference<FrameworkElement>(frameworkElement);
-                    this.InternalAttach(frameworkElement);                    
+                    this.AttachInternal(frameworkElement);                  
                 }
             }
         }
 
-        protected virtual void InternalAttach(FrameworkElement frameworkElement)
+        protected virtual void AttachInternal(FrameworkElement frameworkElement)
         {
             // The observer will be kept alive by the event handlers
             new WeakLifetimeObserver(frameworkElement, this);
@@ -99,31 +98,28 @@ namespace Windows.UI.Interactivity
         /// This is used when a behavior or trigger is attached to an itemcontainer,
         /// which is virtualized and uses recycling.
         /// </summary>
-        public void AssociatedObjectLoaded()
+        public void AssociatedObjectLoaded(FrameworkElement elem)
         {
             Debug.WriteLine("{0} {2} loaded to {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
             //only try to recover when not attached
             if (this.AssociatedObject == null && !isLoaded)
             {
                 isLoaded = true;
-                FrameworkElement associatedObject;
-                if (savedReference != null && savedReference.TryGetTarget(out associatedObject))
+                if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 {
-                    if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-                    {
-                        this.AssociatedObject = associatedObject;
-                    }
-                    this.OnAttached();
+                    this.AssociatedObject = elem;
                 }
+                this.OnAttached();
             }
         }
 
         /// <summary>
         /// Handles the Unloaded event of the AssociatedObject control.
         /// </summary>
-        public void AssociatedObjectUnloaded()
+        public void AssociatedObjectUnloaded(FrameworkElement elem)
         {
             Debug.WriteLine("{0} {2} unloaded from {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
+
             if (this.AssociatedObject != null && isLoaded)
             {
                 isLoaded = false;
@@ -141,7 +137,7 @@ namespace Windows.UI.Interactivity
             this.AssociatedObject = null;
         }
 
-        public FrameworkElement AssociatedObject { get; protected set; } 
+        public FrameworkElement AssociatedObject { get; private set; } 
 
         #endregion
 

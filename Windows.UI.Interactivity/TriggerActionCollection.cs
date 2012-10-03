@@ -25,10 +25,10 @@ namespace Windows.UI.Interactivity
         {
         }
 
-        protected override void InternalAttach(FrameworkElement frameworkElement)
+        protected override void AttachInternal(FrameworkElement frameworkElement)
         {
-            base.InternalAttach(frameworkElement);
-            this.AssociatedObjectLoaded();
+            base.AttachInternal(frameworkElement);
+            this.AssociatedObjectLoaded(frameworkElement);
         }
 
         /// <summary>

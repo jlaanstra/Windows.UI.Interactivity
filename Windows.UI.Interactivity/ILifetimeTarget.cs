@@ -9,7 +9,7 @@ namespace Windows.UI.Interactivity
 {
     public interface ILifetimeTarget
     {
-        void AssociatedObjectLoaded();
-        void AssociatedObjectUnloaded();
+        void AssociatedObjectLoaded(FrameworkElement elem);
+        void AssociatedObjectUnloaded(FrameworkElement elem);
     }
 }
