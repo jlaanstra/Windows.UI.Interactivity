@@ -126,6 +126,7 @@ namespace Windows.UI.Interactivity
         /// </summary>
         public override void Detach()
         {
+            base.Detach();
             this.OnDetaching();
             this.AssociatedObject = null;
             this.OnAssociatedObjectChanged();

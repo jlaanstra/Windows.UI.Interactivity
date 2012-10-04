@@ -119,12 +119,7 @@ namespace Windows.UI.Interactivity
         public void AssociatedObjectUnloaded(FrameworkElement elem)
         {
             Debug.WriteLine("{0} {2} unloaded from {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
-
-            if (this.AssociatedObject != null && isLoaded)
-            {
-                isLoaded = false;
-                this.Detach();
-            }
+            this.Detach();
         }
 
         /// <summary>
@@ -132,9 +127,13 @@ namespace Windows.UI.Interactivity
         /// </summary>
         public void Detach()
         {
-            //Debug.WriteLine("{0} detaching", this.GetType());
-            this.OnDetaching();
-            this.AssociatedObject = null;
+            if (this.AssociatedObject != null && isLoaded)
+            {
+                isLoaded = false;
+                //Debug.WriteLine("{0} detaching", this.GetType());
+                this.OnDetaching();
+                this.AssociatedObject = null;
+            }
         }
 
         public FrameworkElement AssociatedObject { get; private set; } 
