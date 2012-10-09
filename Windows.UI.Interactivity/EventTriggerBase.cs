@@ -24,7 +24,7 @@ namespace Windows.UI.Interactivity
         private Type sourceTypeConstraint;
         private bool isSourceChangedRegistered;
         private NameResolver sourceNameResolver;
-        private MethodInfo eventHandlerMethodInfo;
+        private Delegate handler;
 
         /// <summary>
         /// Gets the type constraint of the associated object.
@@ -408,8 +408,8 @@ namespace Windows.UI.Interactivity
             }
             else
             {
-                this.eventHandlerMethodInfo = typeof(EventTriggerBase).GetTypeInfo().GetDeclaredMethod("OnEventImpl");
-                Delegate handler = this.eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
+                MethodInfo eventHandlerMethodInfo = typeof(EventTriggerBase).GetTypeInfo().GetDeclaredMethod("OnEventImpl");
+                this.handler = eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
 
                 WindowsRuntimeMarshal.AddEventHandler<Delegate>(
                         dlg => (EventRegistrationToken)@event.AddMethod.Invoke(obj, new object[] { dlg }),
@@ -455,15 +455,14 @@ namespace Windows.UI.Interactivity
         private void UnregisterEventImpl(object obj, string eventName)
         {
             Type type = obj.GetType();
-            if (this.eventHandlerMethodInfo == null)
+            if (this.handler == null)
             {
                 return;
             }
             EventInfo @event = type.GetRuntimeEvent(eventName);
-            Delegate handler = this.eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
             WindowsRuntimeMarshal.RemoveEventHandler<Delegate>(
-                etr => @event.RemoveMethod.Invoke(this.AssociatedObject, new object[] { etr }), handler);
-            this.eventHandlerMethodInfo = (MethodInfo)null;
+                etr => @event.RemoveMethod.Invoke(this.AssociatedObject, new object[] { etr }), this.handler);
+            this.handler = null;
         }
 
         private void OnEventImpl(object sender, RoutedEventArgs eventArgs)
