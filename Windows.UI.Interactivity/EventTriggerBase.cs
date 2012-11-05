@@ -25,6 +25,8 @@ namespace Windows.UI.Interactivity
         private bool isSourceChangedRegistered;
         private NameResolver sourceNameResolver;
         private Delegate handler;
+				Action<EventRegistrationToken> _removeMethod;
+
 
         /// <summary>
         /// Gets the type constraint of the associated object.
@@ -411,9 +413,17 @@ namespace Windows.UI.Interactivity
                 MethodInfo eventHandlerMethodInfo = typeof(EventTriggerBase).GetTypeInfo().GetDeclaredMethod("OnEventImpl");
                 this.handler = eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
 
+							// jpm: initialized '_removeMethod' that is used here and in RemoveEventHandler
+
+								_removeMethod = ert => {
+									@event.RemoveMethod.Invoke( obj, new object [] { ert } );
+								};
+
                 WindowsRuntimeMarshal.AddEventHandler<Delegate>(
                         dlg => (EventRegistrationToken)@event.AddMethod.Invoke(obj, new object[] { dlg }),
-                        etr => @event.RemoveMethod.Invoke(obj, new object[] { etr }), handler);
+                        //etr => @event.RemoveMethod.Invoke(obj, new object[] { etr }),
+												this._removeMethod,
+												handler);
             }
         }
 
@@ -460,9 +470,16 @@ namespace Windows.UI.Interactivity
                 return;
             }
             EventInfo @event = type.GetRuntimeEvent(eventName);
+
+			// jpm: useing '_removeMethod' rather than generating a separate chunk of code
+
             WindowsRuntimeMarshal.RemoveEventHandler<Delegate>(
-                etr => @event.RemoveMethod.Invoke(this.AssociatedObject, new object[] { etr }), this.handler);
+                //etr => @event.RemoveMethod.Invoke(this.AssociatedObject, new object[] { etr }),
+								this._removeMethod,
+								this.handler);
             this.handler = null;
+						this._removeMethod = null;
+
         }
 
         private void OnEventImpl(object sender, RoutedEventArgs eventArgs)
