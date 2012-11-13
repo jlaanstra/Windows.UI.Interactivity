@@ -17,6 +17,7 @@ namespace Windows.UI.Interactivity
     {
         public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(InvokeCommandAction), null);
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register("CommandParameter", typeof(object), typeof(InvokeCommandAction), null);
+        public static readonly DependencyProperty PassEventArgsToCommandProperty = DependencyProperty.Register("PassEventArgsToCommand", typeof(bool), typeof(InvokeCommandAction), null);
         private string commandName;
 
         /// <summary>
@@ -95,6 +96,25 @@ namespace Windows.UI.Interactivity
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [pass event args to command].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [pass event args to command]; otherwise, <c>false</c>.
+        /// </value>
+        public bool PassEventArgsToCommand
+        {
+            get
+            {
+                return (bool)this.GetValue(InvokeCommandAction.PassEventArgsToCommandProperty);
+            }
+
+            set
+            {
+                this.SetValue(InvokeCommandAction.PassEventArgsToCommandProperty, value);
+            }
+        }
+
         static InvokeCommandAction()
         {
         }
@@ -109,9 +129,9 @@ namespace Windows.UI.Interactivity
             if (this.AssociatedObject == null)
                 return;
             ICommand command = this.ResolveCommand();
-            if (command == null || !command.CanExecute(this.CommandParameter))
+            if (command == null || !command.CanExecute(this.PassEventArgsToCommand ? parameter : this.CommandParameter))
                 return;
-            command.Execute(this.CommandParameter);
+            command.Execute(this.PassEventArgsToCommand ? parameter : this.CommandParameter);
         }
 
         private ICommand ResolveCommand()
