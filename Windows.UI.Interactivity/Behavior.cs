@@ -30,7 +30,7 @@ namespace Windows.UI.Interactivity
         /// 
         /// </summary>
         /// <param name="frameworkElement">The object to attach to.</param><exception cref="T:System.InvalidOperationException">The Behavior is already hosted on a different element.</exception><exception cref="T:System.InvalidOperationException">dependencyObject does not satisfy the Behavior type constraint.</exception>
-        public override async void Attach(FrameworkElement frameworkElement)
+        public override void Attach(FrameworkElement frameworkElement)
         {
             if (frameworkElement == this.AssociatedObject)
             {
@@ -48,10 +48,8 @@ namespace Windows.UI.Interactivity
             {
                 this.AssociatedObject = frameworkElement;
                 this.OnAssociatedObjectChanged();
-
-                base.Attach(frameworkElement);
-                //we need to fix the datacontext for databinding to work
-                await this.ConfigureDataContextAsync();
+                //Attach handles the DataContext
+                base.Attach(frameworkElement);                
                 this.OnAttached();
             }
         }

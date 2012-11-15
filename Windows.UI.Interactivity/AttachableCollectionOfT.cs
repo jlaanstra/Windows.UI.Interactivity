@@ -15,15 +15,9 @@ namespace Windows.UI.Interactivity
     /// Implements a collection of attachable objects that can be attached to a DependencyObject
     /// </summary>
     /// <typeparam name="T">The type of elements</typeparam>
-    public abstract class AttachableCollection<T> : DependencyObjectCollection<T>, IAttachedObject, ILifetimeTarget
+    public abstract class AttachableCollection<T> : FrameworkElementCollection<T>, IAttachedObject
         where T : FrameworkElement, IAttachedObject
-    {
-        private bool isLoaded = false;
-
-        /// <summary>
-        /// The saved weak reference to the associated object
-        /// </summary>
-        private WeakReference<FrameworkElement> savedReference;
+    {        
 
         #region Abstracts
         
@@ -88,38 +82,7 @@ namespace Windows.UI.Interactivity
         }
 
         protected virtual void AttachInternal(FrameworkElement frameworkElement)
-        {
-            // The observer will be kept alive by the event handlers
-            new WeakLifetimeObserver(frameworkElement, this);
-        }
-
-        /// <summary>
-        /// Handles the Loaded event of the AssociatedObject control.
-        /// This is used when a behavior or trigger is attached to an itemcontainer,
-        /// which is virtualized and uses recycling.
-        /// </summary>
-        public void AssociatedObjectLoaded(FrameworkElement elem)
-        {
-            Debug.WriteLine("{0} {2} loaded to {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
-            //only try to recover when not attached
-            if (this.AssociatedObject == null && !isLoaded)
-            {
-                isLoaded = true;
-                if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-                {
-                    this.AssociatedObject = elem;
-                }
-                this.OnAttached();
-            }
-        }
-
-        /// <summary>
-        /// Handles the Unloaded event of the AssociatedObject control.
-        /// </summary>
-        public void AssociatedObjectUnloaded(FrameworkElement elem)
-        {
-            Debug.WriteLine("{0} {2} unloaded from {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
-            this.Detach();
+        {            
         }
 
         /// <summary>
@@ -127,16 +90,15 @@ namespace Windows.UI.Interactivity
         /// </summary>
         public void Detach()
         {
-            if (this.AssociatedObject != null && isLoaded)
+            if (this.AssociatedObject != null)
             {
-                isLoaded = false;
                 //Debug.WriteLine("{0} detaching", this.GetType());
                 this.OnDetaching();
                 this.AssociatedObject = null;
             }
         }
 
-        public FrameworkElement AssociatedObject { get; private set; } 
+        public FrameworkElement AssociatedObject { get; protected set; } 
 
         #endregion
 

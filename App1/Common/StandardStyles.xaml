@@ -408,14 +408,14 @@
         Uncomment any style you reference (as not all may be required).
     -->
 
-    <!--
+    
     
     <Style x:Key="SkipBackAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="SkipBackAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Skip Back"/>
         <Setter Property="Content" Value="&#xE100;"/>
     </Style>
-    <Style x:Key="SkipAheadAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
+    <!--<Style x:Key="SkipAheadAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="SkipAheadAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Skip Ahead"/>
         <Setter Property="Content" Value="&#xE101;"/>

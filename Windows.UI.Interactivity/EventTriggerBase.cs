@@ -24,7 +24,10 @@ namespace Windows.UI.Interactivity
         private Type sourceTypeConstraint;
         private bool isSourceChangedRegistered;
         private NameResolver sourceNameResolver;
+
         private Delegate handler;
+        private Func<Delegate, EventRegistrationToken> addMethod;
+        private Action<EventRegistrationToken> removeMethod;
 
         /// <summary>
         /// Gets the type constraint of the associated object.
@@ -206,9 +209,9 @@ namespace Windows.UI.Interactivity
         /// <remarks>
         /// Override this to provide more granular control over when actions associated with this trigger will be invoked.
         /// </remarks>
-        protected virtual void OnEvent(RoutedEventArgs eventArgs)
+        protected virtual void OnEvent(object eventArgs)
         {
-            this.InvokeActions((object)eventArgs);
+            this.InvokeActions(eventArgs);
         }
 
         private void OnSourceChanged(object oldSource, object newSource)
@@ -373,7 +376,9 @@ namespace Windows.UI.Interactivity
         private void RegisterLoaded(FrameworkElement associatedElement)
         {
             if (this.IsLoadedRegistered || associatedElement == null)
+            {
                 return;
+            }
             associatedElement.Loaded += this.OnEventImpl;
             this.IsLoadedRegistered = true;
         }
@@ -381,7 +386,9 @@ namespace Windows.UI.Interactivity
         private void UnregisterLoaded(FrameworkElement associatedElement)
         {
             if (!this.IsLoadedRegistered || associatedElement == null)
+            {
                 return;
+            }
             associatedElement.Loaded -= this.OnEventImpl;
             this.IsLoadedRegistered = false;
         }
@@ -410,10 +417,10 @@ namespace Windows.UI.Interactivity
             {
                 MethodInfo eventHandlerMethodInfo = typeof(EventTriggerBase).GetTypeInfo().GetDeclaredMethod("OnEventImpl");
                 this.handler = eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
+                this.addMethod = dlg => (EventRegistrationToken)@event.AddMethod.Invoke(obj, new object[] { dlg });
+                this.removeMethod = etr => @event.RemoveMethod.Invoke(obj, new object[] { etr });
 
-                WindowsRuntimeMarshal.AddEventHandler<Delegate>(
-                        dlg => (EventRegistrationToken)@event.AddMethod.Invoke(obj, new object[] { dlg }),
-                        etr => @event.RemoveMethod.Invoke(obj, new object[] { etr }), handler);
+                WindowsRuntimeMarshal.AddEventHandler<Delegate>(this.addMethod, this.removeMethod, handler);
             }
         }
 
@@ -459,10 +466,10 @@ namespace Windows.UI.Interactivity
             {
                 return;
             }
-            EventInfo @event = type.GetRuntimeEvent(eventName);
-            WindowsRuntimeMarshal.RemoveEventHandler<Delegate>(
-                etr => @event.RemoveMethod.Invoke(this.AssociatedObject, new object[] { etr }), this.handler);
+            WindowsRuntimeMarshal.RemoveEventHandler<Delegate>(this.removeMethod, this.handler);
             this.handler = null;
+            this.addMethod = null;
+            this.removeMethod = null;
         }
 
         private void OnEventImpl(object sender, RoutedEventArgs eventArgs)

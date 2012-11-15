@@ -107,11 +107,15 @@ namespace Windows.UI.Interactivity
         protected override void Invoke(object parameter)
         {
             if (this.AssociatedObject == null)
+            {
                 return;
+            }
             ICommand command = this.ResolveCommand();
-            if (command == null || !command.CanExecute(this.CommandParameter))
-                return;
-            command.Execute(this.CommandParameter);
+            object param = this.CommandParameter ?? parameter;
+            if (command != null && command.CanExecute(param))
+            {
+                command.Execute(param);
+            }
         }
 
         private ICommand ResolveCommand()

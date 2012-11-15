@@ -28,7 +28,14 @@ namespace Windows.UI.Interactivity
         protected override void AttachInternal(FrameworkElement frameworkElement)
         {
             base.AttachInternal(frameworkElement);
-            this.AssociatedObjectLoaded(frameworkElement);
+            if (this.AssociatedObject == null)
+            {
+                if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+                {
+                    this.AssociatedObject = frameworkElement;
+                }
+                this.OnAttached();
+            }
         }
 
         /// <summary>

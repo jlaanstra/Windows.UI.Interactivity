@@ -474,6 +474,14 @@ namespace App1.Data
                     group14));
             this.AllGroups.Add(group14);
 
+            ShowCommand = new DelegateCommand(x => true, x => this.Show());
+        }
+
+        public DelegateCommand ShowCommand { get; set; }
+
+        public void Show()
+        {
+            new MessageDialog("Awesome!").ShowAsync();
         }
     }
 }

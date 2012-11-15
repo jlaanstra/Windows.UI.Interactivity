@@ -1,7 +1,7 @@
 ﻿using App1.Data;
-
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Windows.Foundation;
@@ -68,6 +68,16 @@ namespace App1
             // by passing required information as a navigation parameter
             var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(ItemDetailPage), itemId);
+        }
+
+        private void bottomAppBar_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Loaded");
+        }
+
+        private void bottomAppBar_Opened_1(object sender, object e)
+        {
+            Debug.WriteLine("Opened");
         }
     }
 }

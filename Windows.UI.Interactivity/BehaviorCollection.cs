@@ -10,7 +10,7 @@ namespace Windows.UI.Interactivity
     /// Represents a collection of behaviors with a shared AssociatedObject and provides change notifications to its contents when that AssociatedObject changes.
     /// 
     /// </summary>
-    public sealed class BehaviorCollection : AttachableCollection<Behavior>
+    public sealed class BehaviorCollection : LoadableAttachableCollection<Behavior>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Windows.Interactivity.BehaviorCollection"/> class.

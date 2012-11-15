@@ -107,8 +107,7 @@
     <Compile Include="Behavior.cs" />
     <Compile Include="BehaviorCollection.cs" />
     <Compile Include="BehaviorOfT.cs" />
-    <Compile Include="DataContextChangedDetector.cs" />
-    <Compile Include="DependencyObjectCollection.cs">
+    <Compile Include="FrameworkElementCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EventTrigger.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="Interaction.cs" />
     <Compile Include="InteractivityBase.cs" />
     <Compile Include="InvokeCommandAction.cs" />
+    <Compile Include="LoadableAttachableCollectionOfT.cs" />
     <Compile Include="NameResolvedEventArgs.cs" />
     <Compile Include="NameResolver.cs" />
     <Compile Include="PreviewInvokeEventArgs.cs">

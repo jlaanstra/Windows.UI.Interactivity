@@ -81,7 +81,7 @@ namespace Windows.UI.Interactivity
         /// 
         /// </summary>
         /// <param name="frameworkElement">The object to attach to.</param><exception cref="T:System.InvalidOperationException">Cannot host the same trigger on more than one object at a time.</exception><exception cref="T:System.InvalidOperationException">dependencyObject does not satisfy the trigger type constraint.</exception>
-        public override async void Attach(FrameworkElement frameworkElement)
+        public override void Attach(FrameworkElement frameworkElement)
         {
             if (frameworkElement == this.AssociatedObject)
             {
@@ -99,10 +99,8 @@ namespace Windows.UI.Interactivity
             {
                 this.AssociatedObject = frameworkElement;                
                 this.OnAssociatedObjectChanged();
-
+                //Attach handles the DataContext
                 base.Attach(frameworkElement);
-                //we need to fix the datacontext for databinding to work
-                await this.ConfigureDataContextAsync();
                 this.Actions.Attach(frameworkElement);
                 this.OnAttached();
             }

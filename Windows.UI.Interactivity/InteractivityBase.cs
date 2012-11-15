@@ -14,7 +14,6 @@ namespace Windows.UI.Interactivity
     {
         private FrameworkElement associatedObject;
         private Type associatedObjectTypeConstraint;
-        private TaskCompletionSource<object> tcs;
 
         #region Constructors
 
@@ -23,7 +22,6 @@ namespace Windows.UI.Interactivity
         /// </summary>
         public InteractivityBase()
         {
-            this.tcs = new TaskCompletionSource<object>();
         }
 
         #endregion
@@ -94,10 +92,11 @@ namespace Windows.UI.Interactivity
 
         public virtual void Attach(FrameworkElement frameworkElement)
         {
+            //we need to fix the datacontext for databinding to work
             if(frameworkElement != null)
             {
                 frameworkElement.AddDataContextChangedHandler(this.DataContextChanged);
-                if (frameworkElement.DataContext != null && !tcs.Task.IsCompleted)
+                if (frameworkElement.DataContext != null)
                 {
                     this.DataContextChanged(frameworkElement, EventArgs.Empty);
                 }
@@ -106,6 +105,7 @@ namespace Windows.UI.Interactivity
 
         public virtual void Detach()
         {
+            //we need to fix the datacontext for databinding to work
             if (this.AssociatedObject != null)
             {
                 this.AssociatedObject.RemoveDataContextChangedHandler(this.DataContextChanged);
@@ -128,24 +128,11 @@ namespace Windows.UI.Interactivity
                 object newDC = this.DataContext;
 
                 this.OnDataContextChanged(oldDC, newDC);
-
-                if (!tcs.Task.IsCompleted)
-                {
-                    tcs.SetResult(newDC);
-                }
             }
         }
 
         protected virtual void OnDataContextChanged(object oldValue, object newValue)
         {
-        }
-
-        /// <summary>
-        /// Configures data context. 
-        /// </summary>
-        protected async Task<object> ConfigureDataContextAsync()
-        {
-            return await tcs.Task;
         }
     }    
 }
