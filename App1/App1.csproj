@@ -111,6 +111,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SizeChangedBehavior.cs" />
     <Compile Include="TappedBehavior.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="GroupedItemsPage.xaml.cs">

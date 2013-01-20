@@ -108,6 +108,9 @@
                     </GroupStyle.Panel>
                 </GroupStyle>
             </GridView.GroupStyle>
+            <i:Interaction.Behaviors>
+                <local:SizeChangedBehavior />
+            </i:Interaction.Behaviors>
         </GridView>
       
         <!-- Back button and page title -->

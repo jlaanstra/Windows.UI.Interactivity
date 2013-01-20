@@ -42,3 +42,4 @@ AppPackages/
 .nuget
 MakeRelease.ps1
 PushRelease.ps1
+Windows.UI.Interactivity/sn.key.pfx
