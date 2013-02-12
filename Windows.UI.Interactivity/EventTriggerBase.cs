@@ -427,14 +427,14 @@ namespace Windows.UI.Interactivity
         private static bool IsValidEvent(EventInfo eventInfo)
         {
             Type eventHandlerType = eventInfo.EventHandlerType;
-            if (!typeof(Delegate).GetTypeInfo().IsAssignableFrom(eventInfo.EventHandlerType.GetTypeInfo()))
+            if (!typeof(Delegate).GetTypeInfo().IsAssignableFrom(eventHandlerType.GetTypeInfo()))
             {
                 return false;
             }
             ParameterInfo[] parameters = eventHandlerType.GetTypeInfo().GetDeclaredMethod("Invoke").GetParameters();
             if (parameters.Length == 2 && typeof(object).GetTypeInfo().IsAssignableFrom(parameters[0].ParameterType.GetTypeInfo()))
             {
-                return typeof(RoutedEventArgs).GetTypeInfo().IsAssignableFrom(parameters[1].ParameterType.GetTypeInfo());
+                return typeof(object).GetTypeInfo().IsAssignableFrom(parameters[1].ParameterType.GetTypeInfo());
             }
             else
             {
@@ -472,7 +472,7 @@ namespace Windows.UI.Interactivity
             this.removeMethod = null;
         }
 
-        private void OnEventImpl(object sender, RoutedEventArgs eventArgs)
+        private void OnEventImpl(object sender, object eventArgs)
         {
             this.OnEvent(eventArgs);
         }

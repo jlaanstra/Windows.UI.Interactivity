@@ -44,3 +44,4 @@ MakeRelease.ps1
 PushRelease.ps1
 Windows.UI.Interactivity/sn.key.pfx
 Windows.UI.Interactivity.v11.suo
+NuGet-Release/
