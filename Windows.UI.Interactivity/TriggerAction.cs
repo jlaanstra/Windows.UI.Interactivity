@@ -20,7 +20,7 @@ namespace Windows.UI.Interactivity
     /// </remarks>
     public abstract class TriggerAction : InteractivityBase
     {
-        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(TriggerAction), new PropertyMetadata((object)true));
+        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register("IsEnabled", typeof(bool), typeof(TriggerAction), new PropertyMetadata(true));
         private bool isHosted;
 
         /// <summary>

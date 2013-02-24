@@ -13,7 +13,7 @@ namespace Windows.UI.Interactivity
     /// </summary>
     public class EventTrigger : EventTriggerBase<object>
     {
-        public static readonly DependencyProperty EventNameProperty = DependencyProperty.Register("EventName", typeof(string), typeof(EventTrigger), new PropertyMetadata((object)"Loaded", new PropertyChangedCallback(EventTrigger.OnEventNameChanged)));
+        public static readonly DependencyProperty EventNameProperty = DependencyProperty.Register("EventName", typeof(string), typeof(EventTrigger), new PropertyMetadata("Loaded", new PropertyChangedCallback(EventTrigger.OnEventNameChanged)));
 
         /// <summary>
         /// Gets or sets the name of the event to listen for. This is a dependency property.
