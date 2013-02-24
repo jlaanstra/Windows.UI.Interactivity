@@ -35,7 +35,7 @@ namespace Windows.UI.Interactivity
         /// </summary>
         public void AssociatedObjectLoaded(FrameworkElement elem)
         {
-            Debug.WriteLine("{0} {2} loaded to {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
+            //Debug.WriteLine("{0} {2} loaded to {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
             //only try to recover when not attached
             if (this.AssociatedObject == null && !isLoaded)
             {
@@ -56,7 +56,7 @@ namespace Windows.UI.Interactivity
             if (isLoaded)
             {
                 isLoaded = false;
-                Debug.WriteLine("{0} {2} unloaded from {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
+                //Debug.WriteLine("{0} {2} unloaded from {1}", this.GetType(), (this.AssociatedObject != null) ? this.AssociatedObject.DataContext : null, this.GetHashCode());
                 this.Detach();
             }
         }
