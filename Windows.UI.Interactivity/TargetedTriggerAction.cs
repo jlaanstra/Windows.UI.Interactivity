@@ -18,8 +18,8 @@ namespace Windows.UI.Interactivity
     /// </remarks>
     public abstract class TargetedTriggerAction : TriggerAction
     {
-        public static readonly DependencyProperty TargetObjectProperty = DependencyProperty.Register("TargetObject", typeof(object), typeof(TargetedTriggerAction), new PropertyMetadata(new PropertyChangedCallback(TargetedTriggerAction.OnTargetObjectChanged)));
-        public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register("TargetName", typeof(string), typeof(TargetedTriggerAction), new PropertyMetadata(new PropertyChangedCallback(TargetedTriggerAction.OnTargetNameChanged)));
+        public static readonly DependencyProperty TargetObjectProperty = DependencyProperty.Register("TargetObject", typeof(object), typeof(TargetedTriggerAction), new PropertyMetadata(null, new PropertyChangedCallback(TargetedTriggerAction.OnTargetObjectChanged)));
+        public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register("TargetName", typeof(string), typeof(TargetedTriggerAction), new PropertyMetadata(null, new PropertyChangedCallback(TargetedTriggerAction.OnTargetNameChanged)));
         private Type targetTypeConstraint;
         private bool isTargetChangedRegistered;
         private NameResolver targetResolver;
