@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Interactivity
@@ -417,7 +418,11 @@ namespace Windows.UI.Interactivity
             {
                 MethodInfo eventHandlerMethodInfo = typeof(EventTriggerBase).GetTypeInfo().GetDeclaredMethod("OnEventImpl");
                 this.handler = eventHandlerMethodInfo.CreateDelegate(@event.EventHandlerType, this);
-                this.addMethod = dlg => (EventRegistrationToken)@event.AddMethod.Invoke(obj, new object[] { dlg });
+                this.addMethod = dlg =>
+                {
+                    var result = @event.AddMethod.Invoke(obj, new object[] { dlg });
+                    return result != null ? (EventRegistrationToken)result : default(EventRegistrationToken);
+                };
                 this.removeMethod = etr => @event.RemoveMethod.Invoke(obj, new object[] { etr });
 
                 WindowsRuntimeMarshal.AddEventHandler<Delegate>(this.addMethod, this.removeMethod, handler);
